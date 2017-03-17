@@ -14,7 +14,8 @@
  * @return 0
  */
 
-int main() {
+int main(int argc,char *argv[])
+{
     printf("\nGet the binary representation of an 32bit signed Integer\n");
     printf("**************************************************\n");
 
@@ -22,6 +23,7 @@ int main() {
 
     printf("Please enter a valid 32bit-integer value: ");
     scanf("%i", &number);
+    fflush(stdin);
 
     int binarySizeOfNumber = sizeof(number) * 8;
     int mask = pow(2,binarySizeOfNumber - 2); // Start with the left side after MSB-Bit
