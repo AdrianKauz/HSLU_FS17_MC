@@ -84,7 +84,6 @@ $RECYCLE.BIN/
 
 # CLion
 # =========================
-CMakeLists.txt
 cmake-build-debug/
 cmake-build-release/
 .idea/
