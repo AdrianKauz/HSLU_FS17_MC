@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-
 /**
  * HSLU FS2017 - Mikrocontroller - TA.MC
  * Exercise 1.3
@@ -13,6 +10,10 @@
  * @date 2017.03.15
  * @return 0
  */
+
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
 
 int main(int argc,char *argv[])
 {
@@ -50,5 +51,5 @@ int main(int argc,char *argv[])
 
     printf("\n**************************************************\n");
 
-    return 0;
+    return(EXIT_SUCCESS);
 }
