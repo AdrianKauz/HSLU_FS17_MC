@@ -6,13 +6,15 @@
  *
  * @author Adrian Kauz
  * @version 1.0
- * @date 2017.03.20
+ * @date 2017.03.22
  * @return 0
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+const int BLOCK_SIZE = 10;
 
 
 /** Function declaration */
@@ -21,8 +23,7 @@ char* reverse(char* character);
 
 
 /** Main */
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]){
     system("cls");
     printf("Bitte Text eingeben --> ");
     char* text = readString(text);
@@ -44,25 +45,20 @@ char* readString(char* pText)
 {
     int i = 0;
     char c;
-    int blockSize = 10;
 
     //Initial the first memoryblock
-    pText = (char *) malloc(sizeof(char) * blockSize);
+    pText = (char *) malloc(sizeof(char) * BLOCK_SIZE);
 
-    if(pText)
-    {
-        while ((c = getchar()) != EOF && c != '\n')
-        {
+    if(pText){
+        while ((c = getchar()) != EOF && c != '\n'){
             *(pText + i) = c;
             i++;
 
-            if(i % 10 == 0)
-            {
+            if(i % BLOCK_SIZE == 0){
                 //Extend current memory with another block
-                pText = (char *) realloc(pText, sizeof(char) * (i + blockSize));
+                pText = (char *) realloc(pText, sizeof(char) * (i + BLOCK_SIZE));
 
-                if (!pText)
-                {
+                if (!pText){
                     return pText;
                 }
             }
@@ -84,19 +80,16 @@ char* readString(char* pText)
  */
 char* reverse(char* pString)
 {
-    if(pString != NULL)
-    {
+    if(pString != NULL){
         size_t len = strlen(pString);
 
-        if(len > 1)
-        {
+        if(len > 1){
             char temp, *pSrc, *pDst;
 
             pSrc = pString;
             pDst = pString + len - 1;
 
-            while(pSrc < pDst)
-            {
+            while(pSrc < pDst){
                 temp = *pSrc;
                 *pSrc++ = *pDst;
                 *pDst-- = temp;
