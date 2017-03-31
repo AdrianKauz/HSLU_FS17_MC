@@ -1,12 +1,11 @@
 /**
  * HSLU FS2017 - Mikrocontroller - TA.MC
  * Exercise 3.1
- * Get name and forename via console from the user and save the values
- * as a simple list.
- * Still full with bugs! Bleh!
+ * Reads every word from a simple txt-file and counts all the different words.
+ * Bleh!
  * @author Adrian Kauz
- * @version 0.5
- * @date 2017.03.28
+ * @version 0.9
+ * @date 2017.03.31
  * @return 0
  */
 
@@ -28,38 +27,48 @@ struct tnode{
     struct tnode* right;
 };
 
+// Globals
 char buf[BUFSIZE];
 int bufp = 0;
+
 
 // Prototypes
 int getch(void);
 void ungetch(int c);
-int getWord(char *word, int lim);
+int getWord(char* pWord, int lim);
 struct tnode* talloc();
-struct tnode* addTree(struct tnode* p, char* w);
-void treePrintInOrder(struct tnode* p);
-void treePrintPostOrder(struct tnode* p);
+struct tnode* addTree(struct tnode* pN, char* pW);
+void treePrintInOrder(struct tnode* pN);
+void treePrintPostOrder(struct tnode* pN);
 
 
+/**
+ * Convert user's input into a person-struct.
+ * Part of code is from "Uebungen_3.pdf"
+ * @author Adrian Kauz
+ * @param argc      Argumentcounter
+ * @param argv[]    Array of Arguments
+ * @return EXIT_SUCCESS or EXIT_FAILURE
+ */
 int main(int argc, char *argv[]) {
     system("cls");
 
     if(argc != 2){
         if(argc == 1){
-            printf("Dateiname fehlt...\n");
+            printf("Filename is missing...\n");
         }
         else{
-            printf("Zu viele Argumente...\n");
+            printf("Too many arguments...\n");
         }
     }
     else{
         struct tnode* root = NULL;
         char word[MAXWORD];
 
-        printf("\"%s\" wird eingelesen...\n", argv[1]);
+        printf("\"%s\" reading file...\n", argv[1]);
 
         if(freopen(argv[1], "r", stdin) == NULL){
-            printf("...konnte \"%s\" nicht öffnen!", argv[1]);
+            printf("...couldn't open \"%s\"!", argv[1]);
         }
         else{
             while(getWord(word, MAXWORD) != EOF){
@@ -81,12 +90,22 @@ int main(int argc, char *argv[]) {
     return(EXIT_FAILURE);
 }
 
-
+/**
+ * Get next char from "stdin"
+ * Part of code is from "Uebungen_3.pdf"
+ * @author Unknown
+ * @return int      Charcode
+ */
 int getch(void){
     return (bufp > 0) ? buf[--bufp] : getchar();
 }
 
 
+/**
+ * Release char from "stdin"
+ * Part of code is from "Uebungen_3.pdf"
+ * @author Unknown
+ */
 void ungetch(int c){
     if(bufp >= BUFSIZE){
         printf("ungetch: too many characters\n");
@@ -96,78 +115,114 @@ void ungetch(int c){
 }
 
 
-int getWord(char *word, int lim){
+/**
+ * Get next word from "stdin"
+ * Part of code is from "Uebungen_3.pdf"
+ * @author Unknown
+ * @param  lim      Limiter for wordsize
+ * @param  word     Word-Pointer
+ * @return int      First charcode from the word
+ */
+int getWord(char* pWord, int lim){
     int c;
-    char *w = word;
+    char* pW = pWord;
 
+    // Ignore whitespace
     while(isspace(c = getch())){
-
     };
 
     if (c != EOF){
-        *w++ = c;
+        *pW++ = c;
     }
 
+    // End of word reached
     if (!isalpha(c)){
-        *w = '\0';
+        *pW = '\0';
         return(c);
     }
 
-    for( ; --lim > 0; w++){
-        if(!isalnum(*w = getch())){
-            ungetch(*w);
+    // Read word until character is not a number or alphanumeric
+    for( ; --lim > 0 ; pW++){
+        if(!isalnum(*pW = getch())){
+            ungetch(*pW);
             break;
         }
     }
 
-    *w ='\0';
+    *pW ='\0';
 
-    return word[0];
+    return pWord[0];
 }
 
 
+/**
+ * Allocate space for struct-type
+ * Part of code is from "Uebungen_3.pdf"
+ * @author Unknown
+ * @return tnode*   Pointer
+ */
 struct tnode* talloc(){
     return malloc(sizeof(struct tnode));
 }
 
 
-struct tnode* addTree(struct tnode* p, char* w){
+/**
+ * Adds a new tree-element to an existing tree
+ * Part of code is from "Uebungen_3.pdf"
+ * @author Unknown
+ * @param  pN       tnode-Pointer
+ * @param  pW       Word-Pointer
+ * @return tnode*   Pointer of
+ */
+struct tnode* addTree(struct tnode* pN, char* pW){
     int cond;
 
-    if(p == NULL){
-        p = talloc();
-        p -> word = strdup(w);
-        p -> count = 1;
-        p -> left = NULL;
-        p -> right = NULL;
+    if(pN == NULL){
+        pN = talloc();
+        pN -> word = strdup(pW);
+        pN -> count = 1;
+        pN -> left = NULL;
+        pN -> right = NULL;
     }
-    else if ((cond = strcmp(w, p -> word)) == 0){
-        p -> count++;
+    else if ((cond = strcmp(pW, pN -> word)) == 0){
+        pN -> count++;
     }
     else if (cond < 0){
-        p -> left = addTree(p -> left, w);
+        pN -> left = addTree(pN -> left, pW);
     }
     else{
-        p -> right = addTree(p -> right, w);
+        pN -> right = addTree(pN -> right, pW);
     }
 
-    return p;
+    return pN;
 }
 
 
-void treePrintInOrder(struct tnode* p){
-    if (p != NULL){
-        treePrintInOrder(p -> left);
-        printf("%4d %s\n", p -> count, p -> word);
-        treePrintInOrder(p -> right);
+/**
+ * Prints out tree in "Inorder"
+ * Part of code is from "Uebungen_3.pdf"
+ * @author Unknown
+ * @param  pN       tnode-Pointer
+ */
+void treePrintInOrder(struct tnode* pN){
+    if (pN != NULL){
+        treePrintInOrder(pN -> left);
+        printf("%4d %s\n", pN -> count, pN -> word);
+        treePrintInOrder(pN -> right);
     }
 }
 
 
-void treePrintPostOrder(struct tnode* p){
-    if (p != NULL){
-        treePrintPostOrder(p -> right);
-        printf("%4d %s\n", p -> count, p -> word);
-        treePrintPostOrder(p -> left);
+/**
+ * Prints out tree in "Postorder"
+ * Part of code is from "Uebungen_3.pdf"
+ * @author Unknown
+ * @param  pN       tnode-Pointer
+ */
+void treePrintPostOrder(struct tnode* pN){
+    if (pN != NULL){
+        treePrintPostOrder(pN -> right);
+        printf("%4d %s\n", pN -> count, pN -> word);
+        treePrintPostOrder(pN -> left);
     }
 }
