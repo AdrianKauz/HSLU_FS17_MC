@@ -1,7 +1,7 @@
-#include <stdio.h>
-#include "Address.h"
+#include <stdlib.h>
+#include "includes/Address.h"
 
-int main() {
-    printf("Hello, World!\n");
-    return 0;
+int main(int argc, char* argv[]) {
+    startAddressManager();
+    return(EXIT_SUCCESS);
 }
