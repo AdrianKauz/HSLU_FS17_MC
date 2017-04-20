@@ -20,11 +20,11 @@ void startAddressManager(){
 
         switch(c){
             case 'N':
-                printf("Add new address...");
                 addNewAddressToList(getNewAddressFromConsole());
                 break;
             case 'L':
                 // List addresses
+                showAllAddresses(pAddressList);
                 break;
             case 'R':
                 // Read addresses from file

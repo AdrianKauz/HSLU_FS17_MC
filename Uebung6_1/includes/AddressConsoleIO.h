@@ -4,6 +4,7 @@
 #define USERINPUT_BUFFER_SIZE 50
 
 void showMainMenue(int addressCounter);
+void showAllAddresses(struct tAddress* pList);
 struct tAddress* getNewAddressFromConsole();
 char* getLine();
 int isValidChar(char newChar);

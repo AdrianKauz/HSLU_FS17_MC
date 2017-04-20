@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "AddressConsoleIO.h"
 #include "Address.h"
+#include "AddressConsoleIO.h"
 
 char InputBuffer[USERINPUT_BUFFER_SIZE];
 
@@ -25,7 +25,11 @@ void showMainMenue(int addressCounter){
 struct tAddress* getNewAddressFromConsole(){
     struct tAddress* pNewPerson = malloc(sizeof(struct tAddress));
 
-    if(pNewPerson != NULL){
+    if(pNewPerson == NULL){
+        printf("\n Wasn't able to allocate new memory!");
+    }
+    else{
+        printf("\n ---------------------------------------------");
         printf("\n Please insert new address (A-Z, a-z, 0-9, -):");
         printf("\n ---------------------------------------------");
         printf("\n Firstname: ");
@@ -47,13 +51,37 @@ struct tAddress* getNewAddressFromConsole(){
     return pNewPerson;
 }
 
+void showAllAddresses(struct tAddress* pList){
+    int addressCounter = 0;
+    struct tAddress* pCurrentAddress = pList;
+
+    if(pCurrentAddress != NULL){
+        printf("\n Nr.\tKey         Value");
+
+        do{
+            printf("\n-----------------------------------------------------------------");
+            printf("\n %i)\tFirstname:  %s",++addressCounter, pCurrentAddress -> firstName);
+            printf("\n\tName:       %s", pCurrentAddress -> name);
+            printf("\n\tStreet:     %s", pCurrentAddress -> street);
+            printf("\n\tStreetNr.:  %s", pCurrentAddress -> streetNr);
+            printf("\n\tZip:        %s", pCurrentAddress -> zip);
+            printf("\n\tCity:       %s", pCurrentAddress -> city);
+
+            pCurrentAddress = pCurrentAddress -> next;
+        }while(pCurrentAddress != NULL);
+    }
+
+    getchar();
+
+    return;
+}
+
 char* getLine(){
     int charCounter = 0;
 
     // Read userinput into buffer
     InputBuffer[charCounter] = getchar();
 
-    //while((isalnum(InputBuffer[charCounter]) || InputBuffer[charCounter] == ' ') && (charCounter < USERINPUT_BUFFER_SIZE)){
     while(isValidChar(InputBuffer[charCounter]) && (charCounter < USERINPUT_BUFFER_SIZE)){
 
         InputBuffer[++charCounter] = getchar();
