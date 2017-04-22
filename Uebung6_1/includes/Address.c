@@ -1,7 +1,8 @@
 #include <ctype.h>
 #include <stdio.h>
-#include "AddressConsoleIO.h"
 #include "Address.h"
+#include "AddressConsoleIO.h"
+#include "AddressFileIO.h"
 
 struct tAddress* pAddressList = NULL;
 
@@ -19,7 +20,7 @@ void startAddressManager(){
         c = toupper(c);
 
         switch(c){
-            case 'N':
+            case 'A':
                 addNewAddressToList(getNewAddressFromConsole());
                 break;
             case 'L':
@@ -31,6 +32,7 @@ void startAddressManager(){
                 break;
             case 'S':
                 // Save addresses to file
+                saveAddressListToFile(pAddressList);
                 break;
             case '1':
                 // Sort list by name

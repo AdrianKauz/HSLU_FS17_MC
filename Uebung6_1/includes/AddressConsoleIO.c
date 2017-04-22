@@ -11,8 +11,8 @@ void showMainMenue(int addressCounter){
     printf("\n ADRESSVERWALTUNG                                     Adrian Kauz (2017.04.14)");
     printf("\n-------------------------------------------------------------------------------");
     printf("\n Current entries: %i", addressCounter);
-    printf("\n\n N --> New address");
-    printf("\n L --> List adresses");
+    printf("\n\n A --> Add new address");
+    printf("\n L --> List all adresses");
     printf("\n R --> Read addresses from file");
     printf("\n S --> Save addresses to file");
     printf("\n 1 --> Sort list by name");
@@ -51,9 +51,8 @@ struct tAddress* getNewAddressFromConsole(){
     return pNewPerson;
 }
 
-void showAllAddresses(struct tAddress* pList){
+void showAllAddresses(struct tAddress* pCurrentAddress){
     int addressCounter = 0;
-    struct tAddress* pCurrentAddress = pList;
 
     if(pCurrentAddress != NULL){
         printf("\n Nr.\tKey         Value");
@@ -71,6 +70,7 @@ void showAllAddresses(struct tAddress* pList){
         }while(pCurrentAddress != NULL);
     }
 
+    printf("\n\n Press <Enter> to menue...");
     getchar();
 
     return;
