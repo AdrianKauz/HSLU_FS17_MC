@@ -22,5 +22,7 @@ void calcHashForAddressItem(struct tAddress*);
 unsigned int jenkins_one_at_a_time_hash(const char*);
 struct tAddress* addNewAddressToList(struct tAddress*, struct tAddress*);
 int countAddressList();
+struct tAddress* sortAddressListByName(struct tAddress*, size_t);
+void swapItems(struct tAddress*, struct tAddress*);
 
 #endif //UEBUNG6_1_ADDRESS_H

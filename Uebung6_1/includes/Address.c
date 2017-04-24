@@ -49,6 +49,7 @@ void startAddressManager(){
                 break;
             case '1':
                 // Sort list by name
+                pAddressList = sortAddressListByName(pAddressList, countAddressList());
                 break;
             case '2':
                 // Sort list by street
@@ -147,3 +148,68 @@ int countAddressList(){
 
     return addressCounter;
 }
+
+struct tAddress* sortAddressListByName(struct tAddress* pCurrentAddressList, size_t length){
+    // Used algorithm: Bubblesort
+    if(pCurrentAddressList != NULL){
+        struct tAddress* currItem = pCurrentAddressList;
+        struct tAddress* nextItem = currItem -> next;
+
+        if(nextItem != NULL){
+            int x;
+            int newSortLoop = TRUE;
+
+            while(newSortLoop == TRUE){
+                newSortLoop = FALSE;
+                x = 0;
+                printf("While...");
+                for(x ; x < length ; x++){
+                    printf("For...");
+                    if(nextItem == NULL){
+                        break;
+                    }
+
+                    if(strcmp(currItem -> name, nextItem -> name) > 0){
+                        swapItems(currItem, nextItem);
+
+                        // Next-Item is know the first item in the list
+                        if(x == 0){
+                            pCurrentAddressList = nextItem;
+                        }
+
+                        newSortLoop = TRUE;
+                    }
+                    else{
+                        currItem = currItem -> next;
+                    }
+
+                    nextItem = currItem -> next;
+                }
+            }
+        }
+    }
+
+    return pCurrentAddressList;
+}
+
+void swapItems(struct tAddress* pA, struct tAddress* pB){
+    struct tAddress* temp = pA -> next;
+
+    // At first update border nodes
+    if(pA -> prev != NULL){
+        pA -> prev -> next = pB;
+    }
+
+    if(pB -> next != NULL){
+        pB -> next -> prev = pA;
+    }
+
+    // Then update pA and PB
+    pA -> next = pB -> next;
+    pB -> next = pB -> prev;
+    pB -> prev = pA -> prev;
+    pA -> prev = temp;
+}
+
+
+
