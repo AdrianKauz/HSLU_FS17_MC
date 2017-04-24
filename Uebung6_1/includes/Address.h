@@ -1,8 +1,8 @@
 #ifndef UEBUNG6_1_ADDRESS_H
 #define UEBUNG6_1_ADDRESS_H
 
-#define FALSE   0
-#define TRUE    1
+enum boolean {FALSE, TRUE};
+enum sortItem {FIRSTNAME, NAME, STREET, ZIP, CITY} item;
 
 struct tAddress{
     char* firstName;

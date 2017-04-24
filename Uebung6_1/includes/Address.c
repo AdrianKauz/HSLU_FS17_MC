@@ -11,17 +11,17 @@ struct tAddress* pAddressList = NULL;
 void startAddressManager(){
     int managerIsRunning = TRUE;
 
-    do{
+    do {
         char c;
 
-        do{
+        do {
             showMainMenue(countAddressList());
-        } while(!isalnum(c = getchar()));
+        } while (!isalnum(c = getchar()));
 
         fflush(stdin);
         c = toupper(c);
 
-        switch(c){
+        switch (c) {
             case 'A':
                 pAddressList = addNewAddressToList(pAddressList, getNewAddressFromConsole());
                 break;
@@ -50,6 +50,8 @@ void startAddressManager(){
             case '1':
                 // Sort list by name
                 pAddressList = sortAddressListByName(pAddressList, countAddressList());
+                getchar();
+                fflush(stdin);
                 break;
             case '2':
                 // Sort list by street
@@ -64,7 +66,7 @@ void startAddressManager(){
             default:
                 break;
         }
-    }while(managerIsRunning);
+    } while (managerIsRunning);
 
     return;
 }
@@ -112,16 +114,15 @@ unsigned int jenkins_one_at_a_time_hash(const char* key) {
 
 
 struct tAddress* addNewAddressToList(struct tAddress* pCurrentAddressList, struct tAddress* pNewAddressItem){
-    if(pNewAddressItem != NULL){
-        if(pCurrentAddressList == NULL){
+    if (pNewAddressItem != NULL){
+        if (pCurrentAddressList == NULL){
             pCurrentAddressList = pNewAddressItem;
-        }
-        else {
+        } else {
             // At first, find last element
             struct tAddress* pCurrAddress = pCurrentAddressList;
 
             // Searching...
-            while(pCurrAddress -> next != NULL){
+            while (pCurrAddress -> next != NULL){
                 pCurrAddress = pCurrAddress -> next;
             }
 
@@ -134,13 +135,14 @@ struct tAddress* addNewAddressToList(struct tAddress* pCurrentAddressList, struc
     return pCurrentAddressList;
 }
 
+
 int countAddressList(){
     int addressCounter = 0;
 
-    if(pAddressList != NULL){
+    if (pAddressList != NULL){
         struct tAddress* currNode = pAddressList;
 
-        while(currNode != NULL){
+        while (currNode != NULL){
             addressCounter++;
             currNode = currNode -> next;
         }
@@ -149,26 +151,23 @@ int countAddressList(){
     return addressCounter;
 }
 
+
 struct tAddress* sortAddressListByName(struct tAddress* pCurrentAddressList, size_t length){
     // Used algorithm: Bubblesort
     if(pCurrentAddressList != NULL){
-        struct tAddress* currItem = pCurrentAddressList;
-        struct tAddress* nextItem = currItem -> next;
-
-        if(nextItem != NULL){
+        if(pCurrentAddressList -> next != NULL){
             int x;
-            int newSortLoop = TRUE;
+            int requestedLoop = TRUE;
+            struct tAddress* currItem;
+            struct tAddress* nextItem;
 
-            while(newSortLoop == TRUE){
-                newSortLoop = FALSE;
+            while(requestedLoop){
+                requestedLoop = FALSE;
+                currItem = pCurrentAddressList;
+                nextItem = currItem -> next;
+
                 x = 0;
-                printf("While...");
-                for(x ; x < length ; x++){
-                    printf("For...");
-                    if(nextItem == NULL){
-                        break;
-                    }
-
+                while(nextItem != NULL){
                     if(strcmp(currItem -> name, nextItem -> name) > 0){
                         swapItems(currItem, nextItem);
 
@@ -177,14 +176,37 @@ struct tAddress* sortAddressListByName(struct tAddress* pCurrentAddressList, siz
                             pCurrentAddressList = nextItem;
                         }
 
-                        newSortLoop = TRUE;
-                    }
-                    else{
+                        requestedLoop = TRUE;
+                    } else {
                         currItem = currItem -> next;
                     }
 
                     nextItem = currItem -> next;
+                    x++;
                 }
+
+                /*for(x ; x < length ; x++){
+                    if(strcmp(currItem -> name, nextItem -> name) > 0){
+                        swapItems(currItem, nextItem);
+
+                        // Next-Item is know the first item in the list
+                        if(x == 0){
+                            pCurrentAddressList = nextItem;
+                        }
+
+                        requestedLoop = TRUE;
+                    } else {
+                        currItem = currItem -> next;
+                    }
+
+                    if(currItem -> next == NULL){
+                        // If for-loop has reached the end of the list, leave it
+                        break;
+                    } else {
+                        // Otherwise get next pair of items
+                        nextItem = currItem -> next;
+                    }
+                }*/
             }
         }
     }
@@ -192,19 +214,23 @@ struct tAddress* sortAddressListByName(struct tAddress* pCurrentAddressList, siz
     return pCurrentAddressList;
 }
 
+
 void swapItems(struct tAddress* pA, struct tAddress* pB){
     struct tAddress* temp = pA -> next;
 
-    // At first update border nodes
-    if(pA -> prev != NULL){
+    // At first update border node of left node...
+    if (pA -> prev != NULL) {
         pA -> prev -> next = pB;
     }
 
-    if(pB -> next != NULL){
+    // ...then update border node of right node
+    if (pB -> next != NULL) {
         pB -> next -> prev = pA;
     }
 
-    // Then update pA and PB
+    printf("    Swap (%s) <--> (%s)\n", pA -> name, pB -> name);
+
+    // Swap pA and PB
     pA -> next = pB -> next;
     pB -> next = pB -> prev;
     pB -> prev = pA -> prev;
