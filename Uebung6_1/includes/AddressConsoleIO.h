@@ -1,7 +1,7 @@
 #ifndef UEBUNG6_1_ADDRESSCONSOLEIO_H
 #define UEBUNG6_1_ADDRESSCONSOLEIO_H
 
-#define USERINPUT_BUFFER_SIZE 50
+#define BUFFER_SIZE 50
 
 void showMainMenue(int addressCounter);
 void showAllAddresses(struct tAddress* pCurrentAddress);

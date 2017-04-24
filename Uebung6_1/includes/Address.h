@@ -11,12 +11,16 @@ struct tAddress{
     char* streetNr;
     char* zip;
     char* city;
+    unsigned int hash;
     struct tAddress* next;
     struct tAddress* prev;
 };
 
 void startAddressManager();
-void addNewAddressToList(struct tAddress* newAddress);
+struct tAddress* getNewEmptyAddressItem();
+void calcHashForAddressItem(struct tAddress*);
+unsigned int jenkins_one_at_a_time_hash(const char*);
+struct tAddress* addNewAddressToList(struct tAddress*, struct tAddress*);
 int countAddressList();
 
 #endif //UEBUNG6_1_ADDRESS_H
