@@ -79,7 +79,7 @@ char* getLine(){
     }
 
     fflush(stdin);
-    Buffer[charCounter] = '\0';
+    Buffer[charCounter++] = '\0';
 
     return getStringFromBuffer(Buffer, charCounter);
 }
