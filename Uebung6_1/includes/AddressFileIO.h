@@ -7,6 +7,5 @@
 
 int exportToFile(struct tAddress* pAddressList);
 struct tAddress* importFromFile();
-char* getStringFromBuffer(char* buffer, int len);
 
 #endif //UEBUNG6_1_ADDRESSFILEIO_H

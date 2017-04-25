@@ -114,16 +114,3 @@ struct tAddress* importFromFile(){
 
     return NULL;
 }
-
-char* getStringFromBuffer(char* buffer, int len){
-    char* newItem = (char*) malloc(sizeof(char) * len);
-
-    if(newItem != NULL){
-        int x = 0;
-        for(x ; x < len; x++){
-            newItem[x] = buffer[x];
-        }
-    }
-
-    return newItem;
-}

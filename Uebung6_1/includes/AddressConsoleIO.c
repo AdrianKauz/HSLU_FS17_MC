@@ -10,15 +10,28 @@ void showMainMenue(int addressCounter){
     printf("\n-------------------------------------------------------------------------------");
     printf("\n Current entries: %i", addressCounter);
     printf("\n\n A --> Add new address");
-    printf("\n L --> List all adresses");
+
+    if(0 < addressCounter){
+        printf("\n L --> List all adresses");
+    }
+
     printf("\n R --> Read addresses from file");
-    printf("\n S --> Save addresses to file");
-    printf("\n 1 --> Sort list by name");
-    printf("\n 2 --> Sort list by street");
-    printf("\n 3 --> Sort list by city");
+
+    if(0 < addressCounter){
+        printf("\n S --> Save addresses to file");
+    }
+
+    if(1 < addressCounter){
+        printf("\n 1 --> Sort list by firstname");
+        printf("\n 2 --> Sort list by name");
+        printf("\n 3 --> Sort list by street");
+        printf("\n 4 --> Sort list by city");
+    }
+
     printf("\n Q --> Quit");
     printf("\n\n Your input: ");
 }
+
 
 struct tAddress* getNewAddressFromConsole(){
     struct tAddress* pNewPerson = getNewEmptyAddressItem();
@@ -48,6 +61,7 @@ struct tAddress* getNewAddressFromConsole(){
     return pNewPerson;
 }
 
+
 char* getLine(){
     char Buffer[BUFFER_SIZE];
     int charCounter = 0;
@@ -64,70 +78,64 @@ char* getLine(){
         }
     }
 
+    fflush(stdin);
     Buffer[charCounter] = '\0';
 
-    // Allocate memory with the length of the input and copy the string from Buffer
-    char* pNewString = (char*) malloc((charCounter + 1) * sizeof(char));
-
-    int x = 0;
-    for(x ; x <= charCounter ; x++){
-        *(pNewString + x) = Buffer[x];
-    }
-
-    fflush(stdin);
-
-    return pNewString;
+    return getStringFromBuffer(Buffer, charCounter);
 }
+
 
 int isValidChar(char newChar){
     // Remember: char is signed 8-Bit int!
 
     // Small Alphas
-    if((96 < newChar) && (newChar < 123)){
+    if ((96 < newChar) && (newChar < 123)){
         return TRUE;
     }
 
     // Big Alphas
-    if((64 < newChar) && (newChar < 91)){
+    if ((64 < newChar) && (newChar < 91)){
         return TRUE;
     }
 
     // Space
-    if(newChar == 32){
+    if (newChar == 32){
         return TRUE;
     }
 
     // Digit
-    if((47 < newChar) && (newChar < 58)){
+    if ((47 < newChar) && (newChar < 58)){
         return TRUE;
     }
 
     // Minus sign
-    if(45 == newChar){
+    if (45 == newChar){
         return TRUE;
     }
 
     return FALSE;
 }
 
+
 void showAllAddresses(struct tAddress* pCurrentAddress){
     int addressCounter = 0;
 
-    if(pCurrentAddress != NULL){
-        printf("\n Nr.\tKey         Value");
+    if (pCurrentAddress != NULL){
+        printf("\n Nr.\tAddress");
+        printf("\n ---\t-----------------------------------------------------------------------");
 
-        do{
-            printf("\n-----------------------------------------------------------------");
-            printf("\n %i)\tFirstname:  %s",++addressCounter, pCurrentAddress -> firstName);
-            printf("\n\tName:       %s", pCurrentAddress -> name);
-            printf("\n\tStreet:     %s", pCurrentAddress -> street);
-            printf("\n\tStreetNr.:  %s", pCurrentAddress -> streetNr);
-            printf("\n\tZip:        %s", pCurrentAddress -> zip);
-            printf("\n\tCity:       %s", pCurrentAddress -> city);
-            printf("\n\tHash:       %u", pCurrentAddress -> hash);
+        do {
+            printf("\n %i)\t%s %s, %s %s, %s %s",
+                   ++addressCounter,
+                   pCurrentAddress -> firstName,
+                   pCurrentAddress -> name,
+                   pCurrentAddress -> street,
+                   pCurrentAddress -> streetNr,
+                   pCurrentAddress -> zip,
+                   pCurrentAddress -> city);
 
             pCurrentAddress = pCurrentAddress -> next;
-        }while(pCurrentAddress != NULL);
+        } while (pCurrentAddress != NULL);
     }
 
     printf("\n\n Press <Enter> to continue...");

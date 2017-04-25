@@ -1,8 +1,8 @@
 #ifndef UEBUNG6_1_ADDRESS_H
 #define UEBUNG6_1_ADDRESS_H
 
-enum boolean {FALSE, TRUE};
-enum sortItem {FIRSTNAME, NAME, STREET, ZIP, CITY} item;
+enum eBoolean {FALSE, TRUE};
+enum eCategory {FIRSTNAME, NAME, STREET, ZIP, CITY} eCategory_t;
 
 struct tAddress{
     char* firstName;
@@ -22,7 +22,8 @@ void calcHashForAddressItem(struct tAddress*);
 unsigned int jenkins_one_at_a_time_hash(const char*);
 struct tAddress* addNewAddressToList(struct tAddress*, struct tAddress*);
 int countAddressList();
-struct tAddress* sortAddressListByName(struct tAddress*, size_t);
+struct tAddress* sortAddressListByName(struct tAddress*, enum eCategory);
 void swapItems(struct tAddress*, struct tAddress*);
+char* getStringFromBuffer(char* buffer, int len);
 
 #endif //UEBUNG6_1_ADDRESS_H
