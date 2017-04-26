@@ -2,15 +2,14 @@
 // Created by Adrian Kauz on 22.04.2017.
 //
 #include <stdio.h>
-#include <stdlib.h>
 #include "Address.h"
 #include "AddressFileIO.h"
 #include "AddressConsoleIO.h"
 
-static const char SEPARATOR = '\t';
-static const char* FILENAME = "addresslist.txt";
+static const char SEPARATOR = ',';
+static const char* FILENAME = "addresslist.csv";
 
-int exportToFile(struct tAddress* pAddressList){
+int exportToCSV(struct tAddress* pAddressList){
     if(pAddressList != NULL){
         FILE* fp;
         fp = fopen(FILENAME, "w");
@@ -42,17 +41,19 @@ int exportToFile(struct tAddress* pAddressList){
     return 0;
 }
 
-
-struct tAddress* importFromFile(){
+eReturnCode_t importFromCSV(){
+    int addressCounter = 0;
     FILE* fp;
     fp = fopen(FILENAME, "r");
 
-    if(fp != NULL){
+    if(fp == NULL) {
+        return RET_FILE_NOT_FOUND;
+    }
+    else {
         char Buffer[BUFFER_SIZE];
         char c;
         int charCounter = 0;
         int addressFragmentCounter = 0;
-        struct tAddress* pNewAddressList = NULL;
         struct tAddress* pNewAddressItem = getNewEmptyAddressItem();
 
         // Start parsing...
@@ -96,21 +97,16 @@ struct tAddress* importFromFile(){
                 // new line -> new Address
                 if (c == '\n') {
                     calcHashForAddressItem(pNewAddressItem);
-                    pNewAddressList = addNewAddressToList(pNewAddressList, pNewAddressItem);
+                    addNewAddressToList(pNewAddressItem);
                     pNewAddressItem = getNewEmptyAddressItem();
                     addressFragmentCounter = 0;
+                    addressCounter++;
                 }
             }
         }
 
         fclose(fp);
 
-        return pNewAddressList;
+        return ((addressCounter == 0) ? RET_FILE_IS_EMPTY : RET_SUCCESS);
     }
-    else
-    {
-        printf("\nNo addresses are loaded. Press <Enter> to continue...");
-    }
-
-    return NULL;
 }

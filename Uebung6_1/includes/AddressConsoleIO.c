@@ -1,35 +1,148 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "Address.h"
 #include "AddressConsoleIO.h"
 
 void showMainMenue(int addressCounter){
     system("cls");
     printf("-------------------------------------------------------------------------------");
-    printf("\n ADRESSVERWALTUNG                                     Adrian Kauz (2017.04.14)");
+    printf("\n ADDRESSMANAGEMENT                                     Adrian Kauz (2017.04.14)");
     printf("\n-------------------------------------------------------------------------------");
     printf("\n Current entries: %i", addressCounter);
-    printf("\n\n A --> Add new address");
+    printf("\n\n   [A] Add new address");
 
     if(0 < addressCounter){
-        printf("\n L --> List all adresses");
+        printf("\n   [L] List all addresses");
     }
 
-    printf("\n R --> Read addresses from file");
+    printf("\n   [R] Read addresses from file");
 
     if(0 < addressCounter){
-        printf("\n S --> Save addresses to file");
+        printf("\n   [S] Save addresses to file");
     }
 
     if(1 < addressCounter){
-        printf("\n 1 --> Sort list by firstname");
-        printf("\n 2 --> Sort list by name");
-        printf("\n 3 --> Sort list by street");
-        printf("\n 4 --> Sort list by city");
+        printf("\n   [1] Sort list by firstname");
+        printf("\n   [2] Sort list by name");
+        printf("\n   [3] Sort list by street");
+        printf("\n   [4] Sort list by city");
     }
 
-    printf("\n Q --> Quit");
-    printf("\n\n Your input: ");
+    printf("\n   [Q] Quit");
+    printf("\n\n Selected option: ");
+}
+
+
+void startAddressManager(){
+    int managerIsRunning = TRUE;
+    int addressCounter;
+    char c;
+
+    do {
+        addressCounter = lengthOfAddressList();
+
+        do {
+            showMainMenue(addressCounter);
+        } while (!isalnum(c = getchar()));
+
+        fflush(stdin);
+        c = toupper(c);
+
+        switch (c) {
+            case 'A':
+                printf("-------------------------------------------------------------------------------");
+                if(addNewAddressToList(getNewAddressFromConsole()) == RET_SUCCESS){
+                    printf("\n --> Address successfully added!");
+                } else {
+                    printf("\n --> ERROR: Unable to add the new address!");
+                }
+
+                showPressEnterToContinue();
+                break;
+            case 'L':
+                printf("-------------------------------------------------------------------------------");
+                // List addresses
+                if(0 < addressCounter){
+                    showAllAddresses(getCurrentAddressList());
+                    showPressEnterToContinue();
+                }
+
+                break;
+            case 'R':
+                printf("-------------------------------------------------------------------------------");
+                // Read addresses from file
+                switch (importFromFile(CSV)){
+                    case RET_FILE_IS_EMPTY:
+                        printf("\n --> No addresses were imported. File was empty!");
+                        break;
+                    case RET_SUCCESS:
+                        addressCounter = lengthOfAddressList();
+
+                        if(addressCounter < 2){
+                            printf("\n --> 1 address was successfully loaded!", addressCounter);
+                        } else {
+                            printf("\n --> %d addresses were successfully loaded!", addressCounter);
+                        }
+                        break;
+                    case RET_FILE_NOT_FOUND:
+                        printf("\n --> ERROR: File not Found!");
+                        break;
+                    default:
+                        break;
+                }
+
+                showPressEnterToContinue();
+                break;
+            case 'S':
+                printf("-------------------------------------------------------------------------------");
+                // Save addresses to file
+                if(0 < addressCounter){
+                    exportToFile(CSV);
+                    printf("-------------------------------------------------------------------------------");
+                    printf("\n %d addresses saved.", addressCounter);
+                    showPressEnterToContinue();
+                }
+
+                break;
+            case '1':
+                // Sort list by firstname
+                if(0 < addressCounter){
+                    sortAddressListByName(FIRSTNAME);
+                }
+
+                break;
+            case '2':
+                // Sort list by name
+                if(0 < addressCounter){
+                    sortAddressListByName(NAME);
+                }
+
+                break;
+            case '3':
+                // Sort list by street
+                if(0 < addressCounter){
+                    sortAddressListByName(STREET);
+                }
+
+                break;
+            case '4':
+                // Sort list by city
+                if(0 < addressCounter){
+                    sortAddressListByName(CITY);
+                }
+
+                break;
+            case 'Q':
+                // Quit
+                managerIsRunning = FALSE;
+                break;
+            default:
+                break;
+        }
+    } while (managerIsRunning);
+
+    return;
 }
 
 
@@ -40,21 +153,22 @@ struct tAddress* getNewAddressFromConsole(){
         printf("\n Wasn't able to allocate new memory!");
     }
     else{
-        printf("\n ---------------------------------------------");
-        printf("\n Please insert new address (A-Z, a-z, 0-9, -):");
-        printf("\n ---------------------------------------------");
-        printf("\n Firstname: ");
+        printf("\n\n   Please insert new address (A-Z, a-z, 0-9, -):");
+        printf("\n   ---------------------------------------------");
+        printf("\n   Firstname: ");
         pNewPerson -> firstName = getLine();
-        printf(" Name: ");
+        printf("   Name:      ");
         pNewPerson -> name = getLine();
-        printf(" Street: ");
+        printf("   Street:    ");
         pNewPerson -> street = getLine();
-        printf(" StreetNr.: ");
+        printf("   StreetNr.: ");
         pNewPerson -> streetNr = getLine();
-        printf(" Zip: ");
+        printf("   Zip:       ");
         pNewPerson -> zip = getLine();
-        printf(" City: ");
+        printf("   City:      ");
         pNewPerson -> city = getLine();
+        printf("   ---------------------------------------------\n");
+
         calcHashForAddressItem(pNewPerson);
     }
 
@@ -121,11 +235,9 @@ void showAllAddresses(struct tAddress* pCurrentAddress){
     int addressCounter = 0;
 
     if (pCurrentAddress != NULL){
-        printf("\n Nr.\tAddress");
-        printf("\n ---\t-----------------------------------------------------------------------");
 
         do {
-            printf("\n %i)\t%s %s, %s %s, %s %s",
+            printf("\n   %i)\t%s %s, %s %s, %s %s",
                    ++addressCounter,
                    pCurrentAddress -> firstName,
                    pCurrentAddress -> name,
@@ -136,10 +248,14 @@ void showAllAddresses(struct tAddress* pCurrentAddress){
 
             pCurrentAddress = pCurrentAddress -> next;
         } while (pCurrentAddress != NULL);
-    }
+    };
+}
 
+
+void showPressEnterToContinue(void){
     printf("\n\n Press <Enter> to continue...");
     getchar();
+    fflush(stdin);
 
     return;
 }

@@ -5,7 +5,7 @@
 #ifndef UEBUNG6_1_ADDRESSFILEIO_H
 #define UEBUNG6_1_ADDRESSFILEIO_H
 
-int exportToFile(struct tAddress* pAddressList);
-struct tAddress* importFromFile();
+int exportToCSV(struct tAddress* pAddressList);
+eReturnCode_t importFromCSV();
 
 #endif //UEBUNG6_1_ADDRESSFILEIO_H

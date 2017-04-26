@@ -8,85 +8,46 @@
 
 struct tAddress* pAddressList = NULL;
 
-void startAddressManager(){
-    int managerIsRunning = TRUE;
-    int addressCounter;
-    char c;
-
-    do {
-        addressCounter = countAddressList();
-
-        do {
-            showMainMenue(addressCounter);
-        } while (!isalnum(c = getchar()));
-
-        fflush(stdin);
-        c = toupper(c);
-
-        switch (c) {
-            case 'A':
-                pAddressList = addNewAddressToList(pAddressList, getNewAddressFromConsole());
-                break;
-            case 'L':
-                // List addresses
-                showAllAddresses(pAddressList);
-                break;
-            case 'R':
-                // Read addresses from file
-                pAddressList = importFromFile();
-                printf("-------------------------------------------------------------------------------");
-                printf("\n %d addresses are loaded.", countAddressList());
-                printf("\n Press <Enter> to continue...");
-                getchar();
-                fflush(stdin);
-                break;
-            case 'S':
-                // Save addresses to file
-                exportToFile(pAddressList);
-                printf("-------------------------------------------------------------------------------");
-                printf("\n %d addresses saved.", addressCounter);
-                printf("\n Press <Enter> to continue...");
-                getchar();
-                fflush(stdin);
-                break;
-            case '1':
-                // Sort list by firstname
-                pAddressList = sortAddressListByName(pAddressList, FIRSTNAME);
-                break;
-            case '2':
-                // Sort list by name
-                pAddressList = sortAddressListByName(pAddressList, NAME);
-                break;
-            case '3':
-                // Sort list by street
-                pAddressList = sortAddressListByName(pAddressList, STREET);
-                break;
-            case '4':
-                // Sort list by city
-                pAddressList = sortAddressListByName(pAddressList, CITY);
-                break;
-            case 'Q':
-                // Quit
-                managerIsRunning = FALSE;
-                break;
-            default:
-                break;
-        }
-    } while (managerIsRunning);
-
-    return;
+/*
+================
+getCurrentAddressList()
+================
+*/
+struct tAddress* getCurrentAddressList(void){
+    return pAddressList;
 }
 
+/*
+================
+lengthOfAddressList()
+================
+*/
+int lengthOfAddressList(void){
+    int addressCounter = 0;
 
-struct tAddress* getNewEmptyAddressItem(){
+    if (pAddressList != NULL){
+        struct tAddress* currNode = pAddressList;
+
+        while (currNode != NULL){
+            addressCounter++;
+            currNode = currNode -> next;
+        }
+    }
+
+    return addressCounter;
+}
+
+struct tAddress* getNewEmptyAddressItem(void){
     struct tAddress* pNewAddressItem = (struct tAddress*) malloc(sizeof(struct tAddress));
-    pNewAddressItem -> hash = 0;
-    pNewAddressItem -> next = NULL;
-    pNewAddressItem -> prev = NULL;
+
+    if(pNewAddressItem != NULL){
+        pNewAddressItem -> hash = 0;
+        pNewAddressItem -> next = NULL;
+        pNewAddressItem -> prev = NULL;
+    }
 
     return pNewAddressItem;
 }
-
 
 void calcHashForAddressItem(struct tAddress* pAddressItem){
     unsigned int hash = 0;
@@ -98,7 +59,6 @@ void calcHashForAddressItem(struct tAddress* pAddressItem){
     hash += jenkins_one_at_a_time_hash(pAddressItem -> city);
     pAddressItem -> hash = hash;
 }
-
 
 unsigned int jenkins_one_at_a_time_hash(const char* key) {
     size_t stringLength = strlen(key);
@@ -118,14 +78,13 @@ unsigned int jenkins_one_at_a_time_hash(const char* key) {
     return hash;
 }
 
-
-struct tAddress* addNewAddressToList(struct tAddress* pCurrentAddressList, struct tAddress* pNewAddressItem){
+eReturnCode_t addNewAddressToList(struct tAddress* pNewAddressItem){
     if (pNewAddressItem != NULL){
-        if (pCurrentAddressList == NULL){
-            pCurrentAddressList = pNewAddressItem;
+        if (pAddressList == NULL){
+            pAddressList = pNewAddressItem;
         } else {
             // At first, find last element
-            struct tAddress* pCurrAddress = pCurrentAddressList;
+            struct tAddress* pCurrAddress = pAddressList;
 
             // Searching...
             while (pCurrAddress -> next != NULL){
@@ -136,32 +95,17 @@ struct tAddress* addNewAddressToList(struct tAddress* pCurrentAddressList, struc
             pCurrAddress -> next = pNewAddressItem;
             pNewAddressItem -> prev = pCurrAddress;
         }
+
+        return RET_SUCCESS;
     }
 
-    return pCurrentAddressList;
+    return RET_FAILURE;
 }
 
-
-int countAddressList(){
-    int addressCounter = 0;
-
-    if (pAddressList != NULL){
-        struct tAddress* currNode = pAddressList;
-
-        while (currNode != NULL){
-            addressCounter++;
-            currNode = currNode -> next;
-        }
-    }
-
-    return addressCounter;
-}
-
-
-struct tAddress* sortAddressListByName(struct tAddress* pCurrentAddressList, enum eCategory category){
+int sortAddressListByName(eCategory_t category){
     // Used algorithm: Bubblesort
-    if(pCurrentAddressList != NULL){
-        if(pCurrentAddressList -> next != NULL){
+    if(pAddressList != NULL){
+        if(pAddressList -> next != NULL){
             int x;
             int strcmpResult;
             int requestedLoop = TRUE;
@@ -170,7 +114,7 @@ struct tAddress* sortAddressListByName(struct tAddress* pCurrentAddressList, enu
 
             while(requestedLoop){
                 requestedLoop = FALSE;
-                currItem = pCurrentAddressList;
+                currItem = pAddressList;
                 nextItem = currItem -> next;
 
                 x = 0;
@@ -197,7 +141,7 @@ struct tAddress* sortAddressListByName(struct tAddress* pCurrentAddressList, enu
 
                         // Next-Item is know the first item in the list
                         if(x == 0){
-                            pCurrentAddressList = nextItem;
+                            pAddressList = nextItem;
                         }
 
                         requestedLoop = TRUE;
@@ -212,9 +156,8 @@ struct tAddress* sortAddressListByName(struct tAddress* pCurrentAddressList, enu
         }
     }
 
-    return pCurrentAddressList;
+    return 1;
 }
-
 
 void swapItems(struct tAddress* pA, struct tAddress* pB){
     struct tAddress* temp = pA -> next;
@@ -236,7 +179,6 @@ void swapItems(struct tAddress* pA, struct tAddress* pB){
     pA -> prev = temp;
 }
 
-
 char* getStringFromBuffer(char* buffer, int len){
     char* newItem = (char*) malloc(sizeof(char) * len);
 
@@ -250,3 +192,25 @@ char* getStringFromBuffer(char* buffer, int len){
     return newItem;
 }
 
+
+eReturnCode_t importFromFile(eFileType_t fileType){
+    if(fileType == CSV){
+        return importFromCSV();
+    }
+
+    // Maybe there is time for more import-types
+    return RET_UNKNOWN_FILE_TYPE;
+}
+
+
+int exportToFile(eFileType_t fileType){
+    switch(fileType){
+        case CSV:
+            exportToCSV(pAddressList);
+            break;
+        default:
+            break;
+    }
+
+    return 1;
+}
