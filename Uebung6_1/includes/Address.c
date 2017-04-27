@@ -46,12 +46,38 @@ struct tAddress* getNewEmptyAddressItem(void){
     struct tAddress* pNewAddressItem = (struct tAddress*) malloc(sizeof(struct tAddress));
 
     if(pNewAddressItem != NULL){
+        pNewAddressItem -> firstName = NULL;
+        pNewAddressItem -> name = NULL;
+        pNewAddressItem -> street = NULL;
+        pNewAddressItem -> streetNr = NULL;
+        pNewAddressItem -> zip = NULL;
+        pNewAddressItem -> city = NULL;
         pNewAddressItem -> hash = 0;
         pNewAddressItem -> next = NULL;
         pNewAddressItem -> prev = NULL;
     }
 
     return pNewAddressItem;
+}
+
+/*
+================
+clearAddressItem()
+================
+*/
+eReturnCode_t clearAddressItem(struct tAddress* pAddressItem){
+
+    extendedFree(pAddressItem -> firstName);
+    extendedFree(pAddressItem -> name);
+    extendedFree(pAddressItem -> street);
+    extendedFree(pAddressItem -> streetNr);
+    extendedFree(pAddressItem -> zip);
+    extendedFree(pAddressItem -> city);
+    pAddressItem -> hash = 0;
+    pAddressItem -> next = NULL;
+    pAddressItem -> prev = NULL;
+
+    return RET_SUCCESS;
 }
 
 /*
@@ -91,6 +117,28 @@ unsigned int jenkins_one_at_a_time_hash(const char* key) {
     hash += hash << 15;
 
     return hash;
+}
+
+/*
+================
+addressAlreadyExists()
+================
+*/
+eBoolean_t addressAlreadyExists(int currHashValue) {
+    if (pAddressList != NULL){
+        struct tAddress* pCurrAddress = pAddressList;
+
+        do{
+            if (pCurrAddress -> hash == currHashValue) {
+                return TRUE;
+            }
+            else {
+                pCurrAddress = pCurrAddress -> next;
+            }
+        } while(pCurrAddress != NULL);
+    }
+
+    return FALSE;
 }
 
 /*

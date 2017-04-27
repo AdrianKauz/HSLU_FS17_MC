@@ -3,6 +3,8 @@
 
 #define BUFFER_SIZE 50
 
+#define extendedFree(x) free(x); x = NULL
+
 typedef enum eBoolean {
     FALSE,
     TRUE
@@ -71,6 +73,16 @@ struct tAddress* getNewEmptyAddressItem(void);
 
 
 /**
+ * Returns a new empty address-item.
+ *
+ * @author  Adrian Kauz
+ * @param   Address-Item to clear
+ * @return  Returncode RET_SUCCESS or other.
+ */
+eReturnCode_t clearAddressItem(struct tAddress*);
+
+
+/**
  * Calculate hash value for an address-item.
  * The hash-value will not be exported. It's only used internal to identify
  * duplicated items.
@@ -89,6 +101,15 @@ void calcHashForAddressItem(struct tAddress*);
  * @param   Calculated hash value.
  */
 unsigned int jenkins_one_at_a_time_hash(const char*);
+
+
+/**
+ * Checks if new address already exists in the address-list
+ *
+ * @author  Adrian Kauz
+ * @param   Hashvalue from new temporary address item.
+ */
+eBoolean_t addressAlreadyExists(int);
 
 
 /**

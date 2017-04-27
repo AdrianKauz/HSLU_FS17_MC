@@ -97,8 +97,14 @@ eReturnCode_t importFromCSV(){
                 // new line -> new Address
                 if (c == '\n') {
                     calcHashForAddressItem(pNewAddressItem);
-                    addNewAddressToList(pNewAddressItem);
-                    pNewAddressItem = getNewEmptyAddressItem();
+                    if(addressAlreadyExists(pNewAddressItem -> hash)) {
+                        clearAddressItem(pNewAddressItem);
+                    }
+                    else {
+                        addNewAddressToList(pNewAddressItem);
+                        pNewAddressItem = getNewEmptyAddressItem();
+                    };
+
                     addressFragmentCounter = 0;
                     addressCounter++;
                 }
