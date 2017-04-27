@@ -1,8 +1,6 @@
 #ifndef UEBUNG6_1_ADDRESSCONSOLEIO_H
 #define UEBUNG6_1_ADDRESSCONSOLEIO_H
 
-#define BUFFER_SIZE 50
-
 struct eReturnCode_t;
 
 void showMainMenue(int addressCounter);

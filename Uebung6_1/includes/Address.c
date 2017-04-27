@@ -37,6 +37,11 @@ int lengthOfAddressList(void){
     return addressCounter;
 }
 
+/*
+================
+getNewEmptyAddressItem()
+================
+*/
 struct tAddress* getNewEmptyAddressItem(void){
     struct tAddress* pNewAddressItem = (struct tAddress*) malloc(sizeof(struct tAddress));
 
@@ -49,6 +54,11 @@ struct tAddress* getNewEmptyAddressItem(void){
     return pNewAddressItem;
 }
 
+/*
+================
+calcHashForAddressItem()
+================
+*/
 void calcHashForAddressItem(struct tAddress* pAddressItem){
     unsigned int hash = 0;
     hash += jenkins_one_at_a_time_hash(pAddressItem -> firstName);
@@ -60,6 +70,11 @@ void calcHashForAddressItem(struct tAddress* pAddressItem){
     pAddressItem -> hash = hash;
 }
 
+/*
+================
+jenkins_one_at_a_time_hash()
+================
+*/
 unsigned int jenkins_one_at_a_time_hash(const char* key) {
     size_t stringLength = strlen(key);
     size_t x = 0;
@@ -78,6 +93,11 @@ unsigned int jenkins_one_at_a_time_hash(const char* key) {
     return hash;
 }
 
+/*
+================
+addNewAddressToList()
+================
+*/
 eReturnCode_t addNewAddressToList(struct tAddress* pNewAddressItem){
     if (pNewAddressItem != NULL){
         if (pAddressList == NULL){
@@ -102,7 +122,12 @@ eReturnCode_t addNewAddressToList(struct tAddress* pNewAddressItem){
     return RET_FAILURE;
 }
 
-int sortAddressListByName(eCategory_t category){
+/*
+================
+sortAddressList()
+================
+*/
+int sortAddressList(eCategory_t category){
     // Used algorithm: Bubblesort
     if(pAddressList != NULL){
         if(pAddressList -> next != NULL){
@@ -159,26 +184,36 @@ int sortAddressListByName(eCategory_t category){
     return 1;
 }
 
+/*
+================
+swapItems()
+================
+*/
 void swapItems(struct tAddress* pA, struct tAddress* pB){
     struct tAddress* temp = pA -> next;
 
-    // At first update border node of left node...
+    // At first update border node of the left node "pA"...
     if (pA -> prev != NULL) {
         pA -> prev -> next = pB;
     }
 
-    // ...then update border node of right node
+    // ...then update border node of the right node "pB"...
     if (pB -> next != NULL) {
         pB -> next -> prev = pA;
     }
 
-    // Swap pA and PB
+    // ...aaaand finally swap pA and PB
     pA -> next = pB -> next;
     pB -> next = pB -> prev;
     pB -> prev = pA -> prev;
     pA -> prev = temp;
 }
 
+/*
+================
+getStringFromBuffer()
+================
+*/
 char* getStringFromBuffer(char* buffer, int len){
     char* newItem = (char*) malloc(sizeof(char) * len);
 
@@ -192,7 +227,11 @@ char* getStringFromBuffer(char* buffer, int len){
     return newItem;
 }
 
-
+/*
+================
+importFromFile()
+================
+*/
 eReturnCode_t importFromFile(eFileType_t fileType){
     if(fileType == CSV){
         return importFromCSV();
@@ -202,7 +241,11 @@ eReturnCode_t importFromFile(eFileType_t fileType){
     return RET_UNKNOWN_FILE_TYPE;
 }
 
-
+/*
+================
+exportToFile()
+================
+*/
 int exportToFile(eFileType_t fileType){
     switch(fileType){
         case CSV:

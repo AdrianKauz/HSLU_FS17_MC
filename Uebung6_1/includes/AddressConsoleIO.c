@@ -108,28 +108,28 @@ void startAddressManager(){
             case '1':
                 // Sort list by firstname
                 if(0 < addressCounter){
-                    sortAddressListByName(FIRSTNAME);
+                    sortAddressList(FIRSTNAME);
                 }
 
                 break;
             case '2':
                 // Sort list by name
                 if(0 < addressCounter){
-                    sortAddressListByName(NAME);
+                    sortAddressList(NAME);
                 }
 
                 break;
             case '3':
                 // Sort list by street
                 if(0 < addressCounter){
-                    sortAddressListByName(STREET);
+                    sortAddressList(STREET);
                 }
 
                 break;
             case '4':
                 // Sort list by city
                 if(0 < addressCounter){
-                    sortAddressListByName(CITY);
+                    sortAddressList(CITY);
                 }
 
                 break;

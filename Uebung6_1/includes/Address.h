@@ -1,6 +1,8 @@
 #ifndef UEBUNG6_1_ADDRESS_H
 #define UEBUNG6_1_ADDRESS_H
 
+#define BUFFER_SIZE 50
+
 typedef enum eBoolean {
     FALSE,
     TRUE
@@ -15,7 +17,10 @@ typedef enum eCategory {
 } eCategory_t;
 
 typedef enum eFileType {
-    CSV
+    CSV,
+    TXT,
+    XML,
+    JSON
 } eFileType_t;
 
 typedef enum eReturnCode {
@@ -46,6 +51,7 @@ struct tAddress{
  */
 struct tAddress* getCurrentAddressList(void);
 
+
 /**
  * Returns the total number of address-items in the list.
  *
@@ -54,6 +60,7 @@ struct tAddress* getCurrentAddressList(void);
  */
 int lengthOfAddressList(void);
 
+
 /**
  * Returns a new empty address-item.
  *
@@ -61,6 +68,7 @@ int lengthOfAddressList(void);
  * @return  An empty address-item
  */
 struct tAddress* getNewEmptyAddressItem(void);
+
 
 /**
  * Calculate hash value for an address-item.
@@ -72,6 +80,7 @@ struct tAddress* getNewEmptyAddressItem(void);
  */
 void calcHashForAddressItem(struct tAddress*);
 
+
 /**
  * Calculates a hash value for a string.
  * Source: https://en.wikipedia.org/wiki/Jenkins_hash_function
@@ -81,21 +90,64 @@ void calcHashForAddressItem(struct tAddress*);
  */
 unsigned int jenkins_one_at_a_time_hash(const char*);
 
+
 /**
- * Calculates a hash value for a string.
- * Source: https://en.wikipedia.org/wiki/Jenkins_hash_function
+ * Adds a new address item into the list.
  *
  * @author  Adrian Kauz
  * @param   Calculated hash value.
- * @return  Errorcode SUCCESS / FAILURE
+ * @return  Returncode RET_SUCCESS or RET_FAILURE
  */
 eReturnCode_t addNewAddressToList(struct tAddress*);
 
 
-int                 sortAddressListByName(eCategory_t);
-void                swapItems(struct tAddress*, struct tAddress*);
-char*               getStringFromBuffer(char* buffer, int len);
-eReturnCode_t                 importFromFile(eFileType_t);
-int                 exportToFile(eFileType_t);
+/**
+ * Sort the address list by category.
+ *
+ * @author  Adrian Kauz
+ * @param   eCategory-Enum: FIRSTNAME, NAME, STREET or CITY
+ * @return  Integer if everything's OK or not. Better with Returncode enum.
+ */
+int sortAddressList(eCategory_t);
+
+
+/**
+ * Swap two address items.
+ *
+ * @author  Adrian Kauz
+ * @param   The two address items to swap.
+ */
+void swapItems(struct tAddress*, struct tAddress*);
+
+
+/**
+ * Copy the string from the buffer into a new allocated memory.
+ * After that, buffer is ready to receive a new string.
+ *
+ * @author  Adrian Kauz
+ * @param   Pointer of the buffer, length of the string.
+ * @return  Pointer of new allocated string.
+ */
+char* getStringFromBuffer(char* buffer, int len);
+
+
+/**
+ * Gets the requested import-filetype and calls the specific import-function.
+ *
+ * @author  Adrian Kauz
+ * @param   Requested filetype as enum.
+ * @return  Returncode RET_FILE_NOT_FOUND, RET_FILE_IS_EMPTY or RET_SUCCESS
+ */
+eReturnCode_t importFromFile(eFileType_t);
+
+
+/**
+ * Gets the requested export-filetype and calls the specific export-function.
+ *
+ * @author  Adrian Kauz
+ * @param   Requested filetype as enum.
+ * @return  Returncode is a simple integer at the moment. Better with Returncode.
+ */
+int exportToFile(eFileType_t);
 
 #endif //UEBUNG6_1_ADDRESS_H
