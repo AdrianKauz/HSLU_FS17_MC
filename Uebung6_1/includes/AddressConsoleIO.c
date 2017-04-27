@@ -4,7 +4,12 @@
 #include "Address.h"
 #include "AddressConsoleIO.h"
 
-void showMainMenue(int addressCounter){
+/*
+================
+showMainMenue()
+================
+*/
+void showMainMenue(int addressCounter) {
     system("cls");
     printf("-------------------------------------------------------------------------------");
     printf("\n ADDRESSMANAGEMENT                                     Adrian Kauz (2017.04.14)");
@@ -33,8 +38,12 @@ void showMainMenue(int addressCounter){
     printf("\n\n Selected option: ");
 }
 
-
-void startAddressManager(){
+/*
+================
+startAddressManager()
+================
+*/
+void startAddressManager(void) {
     int managerIsRunning = TRUE;
     int addressCounter;
     char c;
@@ -145,8 +154,12 @@ void startAddressManager(){
     return;
 }
 
-
-struct tAddress* getNewAddressFromConsole(){
+/*
+================
+getNewAddressFromConsole()
+================
+*/
+struct tAddress* getNewAddressFromConsole(void) {
     struct tAddress* pNewPerson = getNewEmptyAddressItem();
 
     if(pNewPerson == NULL){
@@ -175,8 +188,12 @@ struct tAddress* getNewAddressFromConsole(){
     return pNewPerson;
 }
 
-
-char* getLine(){
+/*
+================
+getLine()
+================
+*/
+char* getLine(void) {
     char Buffer[BUFFER_SIZE];
     int charCounter = 0;
 
@@ -198,8 +215,12 @@ char* getLine(){
     return getStringFromBuffer(Buffer, charCounter);
 }
 
-
-int isValidChar(char newChar){
+/*
+================
+isValidChar()
+================
+*/
+int isValidChar(char newChar) {
     // Remember: char is signed 8-Bit int!
 
     // Small Alphas
@@ -230,8 +251,12 @@ int isValidChar(char newChar){
     return FALSE;
 }
 
-
-void showAllAddresses(struct tAddress* pCurrentAddress){
+/*
+================
+showAllAddresses()
+================
+*/
+void showAllAddresses(struct tAddress* pCurrentAddress) {
     int addressCounter = 0;
 
     if (pCurrentAddress != NULL){
@@ -251,8 +276,12 @@ void showAllAddresses(struct tAddress* pCurrentAddress){
     };
 }
 
-
-void showPressEnterToContinue(void){
+/*
+================
+showPressEnterToContinue()
+================
+*/
+void showPressEnterToContinue(void) {
     printf("\n\n Press <Enter> to continue...");
     getchar();
     fflush(stdin);

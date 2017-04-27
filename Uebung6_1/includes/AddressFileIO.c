@@ -4,11 +4,15 @@
 #include <stdio.h>
 #include "Address.h"
 #include "AddressFileIO.h"
-//#include "AddressConsoleIO.h"
 
 static const char SEPARATOR = ',';
 static const char* FILENAME = "addresslist.csv";
 
+/*
+================
+exportToCSV()
+================
+*/
 int exportToCSV(struct tAddress* pAddressList){
     if(pAddressList != NULL){
         FILE* fp;
@@ -41,6 +45,11 @@ int exportToCSV(struct tAddress* pAddressList){
     return 0;
 }
 
+/*
+================
+importFromCSV()
+================
+*/
 eReturnCode_t importFromCSV(){
     int addressCounter = 0;
     FILE* fp;
