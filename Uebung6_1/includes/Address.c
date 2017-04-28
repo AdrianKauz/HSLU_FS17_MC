@@ -189,7 +189,7 @@ eReturnCode_t sortAddressList(eCategory_t category){
     if(pAddressList != NULL){
         if(pAddressList -> next != NULL){
             int x = 0;
-            int strcmpResult = NULL;
+            int strcmpResult = 0;
             int requestedLoop = TRUE;
             struct tAddress* currItem;
             struct tAddress* nextItem;
