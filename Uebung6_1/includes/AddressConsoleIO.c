@@ -1,3 +1,13 @@
+/**
+ * HSLU FS2017 - Mikrocontroller - TA.MC
+ * Exercise 6.1
+ * GUI-Functions
+ *
+ * @author Adrian Kauz
+ * @version 0.9
+ * @date 2017.04.28
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -12,19 +22,23 @@ showMainMenue()
 void showMainMenue(int addressCounter) {
     system("cls");
     printf("-------------------------------------------------------------------------------");
-    printf("\n ADDRESSMANAGEMENT                                     Adrian Kauz (2017.04.14)");
+    printf("\n ADDRESSMANAGEMENT                                     Adrian Kauz (2017.04.28)");
     printf("\n-------------------------------------------------------------------------------");
-    printf("\n Current entries: %i", addressCounter);
+    printf("\n Current loaded addresses: %i", addressCounter);
     printf("\n\n   [A] Add new address");
 
+
     if(0 < addressCounter){
+        printf("\n   [C] Remove address");
         printf("\n   [L] List all addresses");
+        printf("\n");
     }
 
     printf("\n   [R] Read addresses from file");
 
     if(0 < addressCounter){
         printf("\n   [S] Save addresses to file");
+        printf("\n");
     }
 
     if(1 < addressCounter){
@@ -32,6 +46,7 @@ void showMainMenue(int addressCounter) {
         printf("\n   [2] Sort list by name");
         printf("\n   [3] Sort list by street");
         printf("\n   [4] Sort list by city");
+        printf("\n");
     }
 
     printf("\n   [Q] Quit");
@@ -69,10 +84,19 @@ void startAddressManager(void) {
 
                 showPressEnterToContinue();
                 break;
+            case 'C':
+                // Remove an address
+                if(0 < addressCounter) {
+                    printf("-------------------------------------------------------------------------------");
+                    printf("\n --> Option is not available at the moment!");
+                    showPressEnterToContinue();
+                }
+
+                break;
             case 'L':
-                printf("-------------------------------------------------------------------------------");
                 // List addresses
-                if(0 < addressCounter){
+                if(0 < addressCounter) {
+                    printf("-------------------------------------------------------------------------------");
                     showAllAddresses(getCurrentAddressList());
                     showPressEnterToContinue();
                 }
@@ -96,7 +120,7 @@ void startAddressManager(void) {
 
                         switch(tempCounter){
                             case 0:
-                                printf("\n --> No new address was found!");
+                                printf("\n --> No new addresses were found!");
                                 break;
                             case 1:
                                 printf("\n --> 1 new address was successfully loaded!");
@@ -119,9 +143,22 @@ void startAddressManager(void) {
                 printf("-------------------------------------------------------------------------------");
                 // Save addresses to file
                 if(0 < addressCounter){
-                    exportToFile(CSV);
-                    printf("-------------------------------------------------------------------------------");
-                    printf("\n %d addresses saved.", addressCounter);
+                    switch(exportToFile(CSV)) {
+                        case RET_SUCCESS:
+                            if(addressCounter == 1) {
+                                printf("\n --> 1 address was saved.");
+                            } else {
+                                printf("\n --> %d addresses were saved.", addressCounter);
+                            }
+
+                            break;
+                        case RET_FILE_NOT_CREATED:
+                            printf("\n --> Could not create file");
+                            break;
+                        default:
+                            break;
+                    }
+
                     showPressEnterToContinue();
                 }
 
@@ -161,7 +198,7 @@ void startAddressManager(void) {
             default:
                 break;
         }
-    } while (managerIsRunning);
+    } while(managerIsRunning);
 
     return;
 }
@@ -174,24 +211,24 @@ getNewAddressFromConsole()
 struct tAddress* getNewAddressFromConsole(void) {
     struct tAddress* pNewPerson = getNewEmptyAddressItem();
 
-    if(pNewPerson == NULL){
+    if(pNewPerson == NULL) {
         printf("\n Wasn't able to allocate new memory!");
     }
-    else{
+    else {
         printf("\n\n   Please insert new address (A-Z, a-z, 0-9, -):");
         printf("\n   ---------------------------------------------");
         printf("\n   Firstname: ");
-        pNewPerson -> firstName = getLine();
+        pNewPerson -> firstName = getString();
         printf("   Name:      ");
-        pNewPerson -> name = getLine();
+        pNewPerson -> name = getString();
         printf("   Street:    ");
-        pNewPerson -> street = getLine();
+        pNewPerson -> street = getString();
         printf("   StreetNr.: ");
-        pNewPerson -> streetNr = getLine();
+        pNewPerson -> streetNr = getString();
         printf("   Zip:       ");
-        pNewPerson -> zip = getLine();
+        pNewPerson -> zip = getString();
         printf("   City:      ");
-        pNewPerson -> city = getLine();
+        pNewPerson -> city = getString();
         printf("   ---------------------------------------------\n");
 
         calcHashForAddressItem(pNewPerson);
@@ -205,7 +242,7 @@ struct tAddress* getNewAddressFromConsole(void) {
 getLine()
 ================
 */
-char* getLine(void) {
+char* getString(void) {
     char Buffer[BUFFER_SIZE];
     int charCounter = 0;
 

@@ -28,9 +28,12 @@ typedef enum eFileType {
 typedef enum eReturnCode {
     RET_SUCCESS,
     RET_FAILURE,
+    RET_FILE_NOT_CREATED,
     RET_FILE_NOT_FOUND,
     RET_FILE_IS_EMPTY,
-    RET_UNKNOWN_FILE_TYPE
+    RET_UNKNOWN_FILE_TYPE,
+    RET_NOTHING_TO_SORT,
+    RET_ADDRESSLIST_IS_EMPTY
 } eReturnCode_t;
 
 struct tAddress{
@@ -127,9 +130,9 @@ eReturnCode_t addNewAddressToList(struct tAddress*);
  *
  * @author  Adrian Kauz
  * @param   eCategory-Enum: FIRSTNAME, NAME, STREET or CITY
- * @return  Integer if everything's OK or not. Better with Returncode enum.
+ * @return  Returncode RET_SUCCESS or RET_NOTHING_TO_SORT
  */
-int sortAddressList(eCategory_t);
+eReturnCode_t sortAddressList(eCategory_t);
 
 
 /**
@@ -167,7 +170,7 @@ eReturnCode_t importFromFile(eFileType_t);
  *
  * @author  Adrian Kauz
  * @param   Requested filetype as enum.
- * @return  Returncode is a simple integer at the moment. Better with Returncode.
+ * @return  Returncode RET_UNKNOWN_FILE_TYPE and returncodes from exportToFile()
  */
 int exportToFile(eFileType_t);
 

@@ -1,9 +1,18 @@
+/**
+ * HSLU FS2017 - Mikrocontroller - TA.MC
+ * Exercise 6.1
+ * Functions for handling the address list
+ *
+ * @author Adrian Kauz
+ * @version 0.9
+ * @date 2017.04.28
+ */
+
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "Address.h"
-#include "AddressConsoleIO.h"
 #include "AddressFileIO.h"
 
 struct tAddress* pAddressList = NULL;
@@ -175,16 +184,17 @@ eReturnCode_t addNewAddressToList(struct tAddress* pNewAddressItem){
 sortAddressList()
 ================
 */
-int sortAddressList(eCategory_t category){
+eReturnCode_t sortAddressList(eCategory_t category){
     // Used algorithm: Bubblesort
     if(pAddressList != NULL){
         if(pAddressList -> next != NULL){
-            int x;
-            int strcmpResult;
+            int x = 0;
+            int strcmpResult = NULL;
             int requestedLoop = TRUE;
             struct tAddress* currItem;
             struct tAddress* nextItem;
 
+            // Start sorting algorithm
             while(requestedLoop){
                 requestedLoop = FALSE;
                 currItem = pAddressList;
@@ -226,10 +236,14 @@ int sortAddressList(eCategory_t category){
                     x++;
                 }
             }
+
+            if (0 < x) {
+                return RET_SUCCESS;
+            }
         }
     }
 
-    return 1;
+    return RET_NOTHING_TO_SORT;
 }
 
 /*
@@ -238,14 +252,20 @@ swapItems()
 ================
 */
 void swapItems(struct tAddress* pA, struct tAddress* pB){
+    /*    +--------+     +--------+     +--------+     +--------+
+       +--|prev    |  +--|prev    |  +--|prev    |  +--|prev    |
+          |  [pX]  |  |  | [pA]   |  |  | [pB]   |  |  | [pY]   |
+          |    next|--+  |    next|--+  |    next|--+  |    next|--+
+          +--------+     +--------+     +--------+     +--------+
+    */
     struct tAddress* temp = pA -> next;
 
-    // At first update border node of the left node "pA"...
+    // At first update border node of the outer left node "pX"...
     if (pA -> prev != NULL) {
         pA -> prev -> next = pB;
     }
 
-    // ...then update border node of the right node "pB"...
+    // At first update border node of the outer right node "pY"...
     if (pB -> next != NULL) {
         pB -> next -> prev = pA;
     }
@@ -295,13 +315,9 @@ exportToFile()
 ================
 */
 int exportToFile(eFileType_t fileType){
-    switch(fileType){
-        case CSV:
-            exportToCSV(pAddressList);
-            break;
-        default:
-            break;
+    if(fileType == CSV){
+        return exportToCSV(pAddressList);
     }
 
-    return 1;
+    return RET_UNKNOWN_FILE_TYPE;
 }

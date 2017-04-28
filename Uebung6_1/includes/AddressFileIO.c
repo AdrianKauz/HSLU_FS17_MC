@@ -1,6 +1,13 @@
-//
-// Created by Adrian Kauz on 22.04.2017.
-//
+/**
+ * HSLU FS2017 - Mikrocontroller - TA.MC
+ * Exercise 6.1
+ * Address IO functions
+ *
+ * @author Adrian Kauz
+ * @version 0.9
+ * @date 2017.04.28
+ */
+
 #include <stdio.h>
 #include "Address.h"
 #include "AddressFileIO.h"
@@ -13,7 +20,7 @@ static const char* FILENAME = "addresslist.csv";
 exportToCSV()
 ================
 */
-int exportToCSV(struct tAddress* pAddressList){
+eReturnCode_t exportToCSV(struct tAddress* pAddressList) {
     if(pAddressList != NULL){
         FILE* fp;
         fp = fopen(FILENAME, "w");
@@ -38,11 +45,13 @@ int exportToCSV(struct tAddress* pAddressList){
 
             fclose(fp);
 
-            return 1;
+            return RET_SUCCESS;
+        } else {
+            return RET_FILE_NOT_CREATED;
         }
     }
 
-    return 0;
+    return RET_ADDRESSLIST_IS_EMPTY;
 }
 
 /*
@@ -50,7 +59,7 @@ int exportToCSV(struct tAddress* pAddressList){
 importFromCSV()
 ================
 */
-eReturnCode_t importFromCSV(){
+eReturnCode_t importFromCSV(void) {
     int addressCounter = 0;
     FILE* fp;
     fp = fopen(FILENAME, "r");
