@@ -80,6 +80,9 @@ void startAddressManager(void) {
                 break;
             case 'R':
                 printf("-------------------------------------------------------------------------------");
+                // Remember number of addresses before import
+                int tempCounter = addressCounter;
+
                 // Read addresses from file
                 switch (importFromFile(CSV)){
                     case RET_FILE_IS_EMPTY:
@@ -88,10 +91,19 @@ void startAddressManager(void) {
                     case RET_SUCCESS:
                         addressCounter = lengthOfAddressList();
 
-                        if(addressCounter < 2){
-                            printf("\n --> 1 address was successfully loaded!", addressCounter);
-                        } else {
-                            printf("\n --> %d addresses were successfully loaded!", addressCounter);
+                        // Calc difference of addresses before and after
+                        tempCounter = addressCounter - tempCounter;
+
+                        switch(tempCounter){
+                            case 0:
+                                printf("\n --> No new address was found!");
+                                break;
+                            case 1:
+                                printf("\n --> 1 new address was successfully loaded!");
+                                break;
+                            default:
+                                printf("\n --> %d new addresses were successfully loaded!", tempCounter);
+                                break;
                         }
                         break;
                     case RET_FILE_NOT_FOUND:
