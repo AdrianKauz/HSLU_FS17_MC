@@ -37,6 +37,16 @@ char* getString(void);
 
 
 /**
+ * Reads a new number from the console as unsigned integer.
+ *
+ * @author  Adrian Kauz
+ * @return  An unsigned Integer. Function is not save, because there's no check
+ *          if input is a number or an alpha!
+ */
+unsigned int getNumberFromConsole(void);
+
+
+/**
  * My own check for valid chars. TRUE or FALSE should returned as
  * type eBoolean_t. But somehow the compiler whines around...
  *

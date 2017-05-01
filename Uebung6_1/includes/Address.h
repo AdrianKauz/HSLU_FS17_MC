@@ -33,6 +33,7 @@ typedef enum eReturnCode {
     RET_FILE_IS_EMPTY,
     RET_UNKNOWN_FILE_TYPE,
     RET_NOTHING_TO_SORT,
+    RET_NOTHING_TO_REMOVE,
     RET_ADDRESSLIST_IS_EMPTY
 } eReturnCode_t;
 
@@ -110,19 +111,31 @@ unsigned int jenkins_one_at_a_time_hash(const char*);
  * Checks if new address already exists in the address-list
  *
  * @author  Adrian Kauz
- * @param   Hashvalue from new temporary address item.
+ * @param   currHashValue as hashvalue from new temporary address item.
+ * @return  Boolean TRUE or FALSE
  */
-eBoolean_t addressAlreadyExists(int);
+eBoolean_t addressAlreadyExists(int currHashValue);
 
 
 /**
  * Adds a new address item into the list.
  *
  * @author  Adrian Kauz
- * @param   Calculated hash value.
+ * @param   tAddress as new address item.
  * @return  Returncode RET_SUCCESS or RET_FAILURE
  */
 eReturnCode_t addNewAddressToList(struct tAddress*);
+
+
+/**
+ * Removes an address item from the address list.
+ *
+ * @author  Adrian Kauz
+ * @param   length as size of the address list
+ * @param   addressNumber as number of the address item to remove
+ * @return  Returncode RET_SUCCESS or RET_NOTHING_TO_REMOVE
+ */
+eReturnCode_t removeAddressFromList(int length, int addressNumber);
 
 
 /**
@@ -160,7 +173,7 @@ char* getStringFromBuffer(char* buffer, int len);
  *
  * @author  Adrian Kauz
  * @param   Requested filetype as enum.
- * @return  Returncode RET_FILE_NOT_FOUND, RET_FILE_IS_EMPTY or RET_SUCCESS
+ * @return  Returncode RET_UNKNOWN_FILE_TYPE or returncodes from importFromCSV()
  */
 eReturnCode_t importFromFile(eFileType_t);
 
@@ -169,9 +182,9 @@ eReturnCode_t importFromFile(eFileType_t);
  * Gets the requested export-filetype and calls the specific export-function.
  *
  * @author  Adrian Kauz
- * @param   Requested filetype as enum.
- * @return  Returncode RET_UNKNOWN_FILE_TYPE and returncodes from exportToFile()
+ * @param   fileType as requested filetype as enum.
+ * @return  Returncode RET_UNKNOWN_FILE_TYPE or returncodes from exportToFile()
  */
-int exportToFile(eFileType_t);
+eReturnCode_t exportToFile(eFileType_t fileType);
 
 #endif //UEBUNG6_1_ADDRESS_H

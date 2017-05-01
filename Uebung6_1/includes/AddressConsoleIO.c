@@ -4,8 +4,8 @@
  * GUI-Functions
  *
  * @author Adrian Kauz
- * @version 0.9
- * @date 2017.04.28
+ * @version 0.99
+ * @date 2017.05.01
  */
 
 #include <stdio.h>
@@ -22,7 +22,7 @@ showMainMenue()
 void showMainMenue(int addressCounter) {
     system("cls");
     printf("-------------------------------------------------------------------------------");
-    printf("\n ADDRESSMANAGEMENT                                     Adrian Kauz (2017.04.28)");
+    printf("\n ADDRESSMANAGEMENT                                     Adrian Kauz (2017.05.01)");
     printf("\n-------------------------------------------------------------------------------");
     printf("\n Current loaded addresses: %i", addressCounter);
     printf("\n\n   [A] Add new address");
@@ -88,7 +88,14 @@ void startAddressManager(void) {
                 // Remove an address
                 if(0 < addressCounter) {
                     printf("-------------------------------------------------------------------------------");
-                    printf("\n --> Option is not available at the moment!");
+                    showAllAddresses(getCurrentAddressList());
+                    printf("\n\n Select number of address-entry which you wish to remove: ");
+                    if(removeAddressFromList(addressCounter, getNumberFromConsole()) == RET_SUCCESS) {
+                        printf("\n --> Address successfully removed!");
+                    } else {
+                        printf("\n --> ERROR: No address was removed!");
+                    }
+
                     showPressEnterToContinue();
                 }
 
@@ -239,7 +246,7 @@ struct tAddress* getNewAddressFromConsole(void) {
 
 /*
 ================
-getLine()
+getString()
 ================
 */
 char* getString(void) {
@@ -262,6 +269,20 @@ char* getString(void) {
     Buffer[charCounter++] = '\0';
 
     return getStringFromBuffer(Buffer, charCounter);
+}
+
+/*
+================
+getNumberFromConsole()
+================
+*/
+unsigned int getNumberFromConsole(void) {
+    unsigned int number = 0;
+
+    scanf("%u", &number);
+    fflush(stdin);
+
+    return number;
 }
 
 /*

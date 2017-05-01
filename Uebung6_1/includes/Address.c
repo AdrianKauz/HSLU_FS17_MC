@@ -4,8 +4,8 @@
  * Functions for handling the address list
  *
  * @author Adrian Kauz
- * @version 0.9
- * @date 2017.04.28
+ * @version 0.99
+ * @date 2017.05.01
  */
 
 #include <ctype.h>
@@ -181,10 +181,60 @@ eReturnCode_t addNewAddressToList(struct tAddress* pNewAddressItem){
 
 /*
 ================
+removeAddressFromList()
+================
+*/
+eReturnCode_t removeAddressFromList(int length, int addressNumber) {
+    if ((length > 0) && (addressNumber > 0) && (addressNumber <= length)) {
+        struct tAddress* currAddressItem = pAddressList;
+        unsigned int currItemNumber = 1;
+
+        // Search item
+        while (currAddressItem != NULL) {
+            if(currItemNumber == addressNumber) {
+                break;
+            } else {
+                currAddressItem = currAddressItem -> next;
+                currItemNumber++;
+            }
+        }
+
+        // At first decouple item from the list
+        if (currItemNumber == 1) {
+            if (length != 1) {
+                pAddressList = currAddressItem -> next;
+                pAddressList -> prev = NULL;
+            }
+        } else {
+            if (currItemNumber == length) {
+                currAddressItem -> prev -> next = NULL;
+            } else {
+                currAddressItem -> prev -> next = currAddressItem -> next;
+                currAddressItem -> next -> prev = currAddressItem -> prev;
+            }
+        }
+
+        // Then delete item
+        extendedFree(currAddressItem -> firstName);
+        extendedFree(currAddressItem -> name);
+        extendedFree(currAddressItem -> street);
+        extendedFree(currAddressItem -> streetNr);
+        extendedFree(currAddressItem -> zip);
+        extendedFree(currAddressItem -> city);
+        extendedFree(currAddressItem);
+
+        return RET_SUCCESS;
+    }
+
+    return RET_NOTHING_TO_REMOVE;
+}
+
+/*
+================
 sortAddressList()
 ================
 */
-eReturnCode_t sortAddressList(eCategory_t category){
+eReturnCode_t sortAddressList(eCategory_t category) {
     // Used algorithm: Bubblesort
     if(pAddressList != NULL){
         if(pAddressList -> next != NULL){
@@ -251,7 +301,7 @@ eReturnCode_t sortAddressList(eCategory_t category){
 swapItems()
 ================
 */
-void swapItems(struct tAddress* pA, struct tAddress* pB){
+void swapItems(struct tAddress* pA, struct tAddress* pB) {
     /*    +--------+     +--------+     +--------+     +--------+
        +--|prev    |  +--|prev    |  +--|prev    |  +--|prev    |
           |  [pX]  |  |  | [pA]   |  |  | [pB]   |  |  | [pY]   |
@@ -282,7 +332,7 @@ void swapItems(struct tAddress* pA, struct tAddress* pB){
 getStringFromBuffer()
 ================
 */
-char* getStringFromBuffer(char* buffer, int len){
+char* getStringFromBuffer(char* buffer, int len) {
     char* newItem = (char*) malloc(sizeof(char) * len);
 
     if(newItem != NULL){
@@ -300,7 +350,7 @@ char* getStringFromBuffer(char* buffer, int len){
 importFromFile()
 ================
 */
-eReturnCode_t importFromFile(eFileType_t fileType){
+eReturnCode_t importFromFile(eFileType_t fileType) {
     if(fileType == CSV){
         return importFromCSV();
     }
@@ -314,7 +364,7 @@ eReturnCode_t importFromFile(eFileType_t fileType){
 exportToFile()
 ================
 */
-int exportToFile(eFileType_t fileType){
+eReturnCode_t exportToFile(eFileType_t fileType) {
     if(fileType == CSV){
         return exportToCSV(pAddressList);
     }
