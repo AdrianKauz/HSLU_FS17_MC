@@ -199,31 +199,33 @@ eReturnCode_t removeAddressFromList(int length, int addressNumber) {
             }
         }
 
-        // At first decouple item from the list
-        if (currItemNumber == 1) {
-            if (length != 1) {
-                pAddressList = currAddressItem -> next;
-                pAddressList -> prev = NULL;
-            }
-        } else {
-            if (currItemNumber == length) {
-                currAddressItem -> prev -> next = NULL;
+        if(currAddressItem != NULL){
+            // At first decouple item from the list
+            if (currItemNumber == 1) {
+                if (length != 1) {
+                    pAddressList = currAddressItem -> next;
+                    pAddressList -> prev = NULL;
+                }
             } else {
-                currAddressItem -> prev -> next = currAddressItem -> next;
-                currAddressItem -> next -> prev = currAddressItem -> prev;
+                if (currItemNumber == length) {
+                    currAddressItem -> prev -> next = NULL;
+                } else {
+                    currAddressItem -> prev -> next = currAddressItem -> next;
+                    currAddressItem -> next -> prev = currAddressItem -> prev;
+                }
             }
+
+            // Then delete item
+            extendedFree(currAddressItem -> firstName);
+            extendedFree(currAddressItem -> name);
+            extendedFree(currAddressItem -> street);
+            extendedFree(currAddressItem -> streetNr);
+            extendedFree(currAddressItem -> zip);
+            extendedFree(currAddressItem -> city);
+            extendedFree(currAddressItem);
+
+            return RET_SUCCESS;
         }
-
-        // Then delete item
-        extendedFree(currAddressItem -> firstName);
-        extendedFree(currAddressItem -> name);
-        extendedFree(currAddressItem -> street);
-        extendedFree(currAddressItem -> streetNr);
-        extendedFree(currAddressItem -> zip);
-        extendedFree(currAddressItem -> city);
-        extendedFree(currAddressItem);
-
-        return RET_SUCCESS;
     }
 
     return RET_NOTHING_TO_REMOVE;
